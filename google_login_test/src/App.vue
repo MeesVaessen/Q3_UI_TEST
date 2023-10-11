@@ -12,19 +12,27 @@ const login = () => {
     console.log("Handle the response", response);
 
     const apiUrl = 'https://localhost:7174/Test/test';
-
-    // Send the access token in the request body as a JSON object
-    axios.post(apiUrl, { access_token: response.access_token },{
-    headers : {
-    'Content-Type': 'application/json'
-  }})
+       // Make an HTTP POST request using fetch
+       fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(response)
+      })
       .then(response => {
-        // Handle the API response
-        console.log(response.data);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Handle the JSON response from the server
+        console.log('Response from server:', data);
       })
       .catch(error => {
         // Handle errors
-        console.error(error);
+        console.error('Error:', error);
       });
   });
 };

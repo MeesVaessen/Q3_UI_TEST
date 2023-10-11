@@ -28,7 +28,7 @@ var params = {};
       })
       .catch(error => {
         // Handle errors
-        console.error(error);
+        console.error('Error:', error);
       });
     }
   }

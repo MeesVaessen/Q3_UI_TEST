@@ -7,7 +7,8 @@
 import axios from 'axios';
 import { googleTokenLogin } from "vue3-google-login"
 
-const apiUrl = 'https://localhost:7174/Test/test';
+const apiUrl = 'https://localhost:7297/Google/';
+const apiUrl2 = 'https://localhost:7174/Test/Test';
 var fragmentString = location.hash.substring(1);
 
 var params = {};
@@ -19,7 +20,7 @@ var params = {};
     localStorage.setItem('oauth2-test-params', JSON.stringify(params) );
     var params = JSON.parse(localStorage.getItem('oauth2-test-params'));
     if (params && params['access_token']) {
-      axios.post(apiUrl, { access_token: params['access_token'] },{
+      axios.post(apiUrl, { accessToken: params['access_token'] },{
     headers : {
     'Content-Type': 'application/json'
   }}) .then(response => {

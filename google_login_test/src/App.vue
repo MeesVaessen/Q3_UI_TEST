@@ -6,6 +6,7 @@
 <script setup>
 import axios from 'axios';
 import { googleTokenLogin } from "vue3-google-login"
+import { convertArrayToCSV } from "convert-array-to-csv"
 
 const apiUrl = 'https://localhost:7297/Google/';
 const apiUrl2 = 'https://localhost:7174/Test/Test';
@@ -25,7 +26,34 @@ var params = {};
     'Content-Type': 'application/json'
   }}) .then(response => {
         // Handle the API response
-        console.log(response.data);
+        const data = response.data
+
+     // Create an array to store the flattened data for all combinations
+     const flattenedDataArray = [];
+
+
+     data.forEach(project => {
+      project.aiServices.forEach(aiService => {
+         const flattenedData = {
+         projectId: project.projectId,
+         projectName: project.projectName,
+         aiServiceId: aiService.id,
+         aiServiceName: aiService.name,
+         aiServiceDescription: aiService.description,
+         aiServiceVersion: aiService.version
+        };
+
+      flattenedDataArray.push(flattenedData);
+  });
+});
+
+      const csvFromArrayOfObjects = convertArrayToCSV(flattenedDataArray, {
+        header: ['projectId', 'projectName', 'aiServiceId', 'aiServiceName', 'aiServiceDescription', 'aiServiceVersion'],
+        separator: ','
+      });
+
+        getCSVFile(csvFromArrayOfObjects)
+        console.log(data);
       })
       .catch(error => {
         // Handle errors
@@ -34,7 +62,17 @@ var params = {};
     }
   }
 
-function oauthSignIn() {
+
+  function getCSVFile(csvData) {
+         let anchor = document.createElement('a');
+         anchor.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvData);
+         anchor.target = '_blank';
+         anchor.download = 'test.csv';
+         anchor.click();
+      }
+
+
+  function oauthSignIn() {
   // Google's OAuth 2.0 endpoint for requesting an access token
   var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
 
